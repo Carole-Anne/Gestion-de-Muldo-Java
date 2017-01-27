@@ -1,1 +1,44 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+#grid{
+	-fx-background-image: url("./../image/fond.png");
+	-fx-background-repeat: stretch;
+	-fx-background-position: center center;
+	-fx-background-size: 100% 100%;
+}
+
+.pair{
+	-fx-background-color: #6A6562;
+}
+
+.impair{
+	-fx-background-color: #7E7673;
+}
+
+.combobox .cell{
+	-fx-text-fill: white ;
+	-fx-background-color: #574F4D;
+}
+
+.combobox .cell:hover{
+	-fx-background-color: #F88E38;
+}
+
+.toggle-button:hover{
+	-fx-background-color: #F88E38;
+}
+
+.toggle-button:selected{
+	-fx-background-color: green;
+}
+
+#tgrbMale{
+	-fx-background-image: url("./../image/male.png");
+	/*-fx-background-color: #6A6562*/
+}
+
+#tgrbFemelle{
+	-fx-background-image: url("./../image/femelle.png");
+	-fx-background-color: #6A6562;
+}
+

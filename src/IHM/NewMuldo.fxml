@@ -11,31 +11,31 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="500.0" minWidth="850.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IHM.PrincipalViewController">
-   <top>
-      <VBox BorderPane.alignment="CENTER">
-         <children>
-            <MenuBar style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);">
+<BorderPane minHeight="500.0" minWidth="850.0" prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IHM.NewMuldoController">
+         <top>
+            <MenuBar style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" BorderPane.alignment="CENTER">
               <menus>
                 <Menu mnemonicParsing="false" text="Muldo">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#newMuldo" text="Nouveau" />
-                        <MenuItem mnemonicParsing="false" text="Modifier" />
-                        <MenuItem mnemonicParsing="false" text="Supprimer" />
+                    <MenuItem mnemonicParsing="false" text="Close" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Groupe" />
+                <Menu mnemonicParsing="false" text="Groupe">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
                 <Menu mnemonicParsing="false" text="?">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />
@@ -43,13 +43,11 @@
                 </Menu>
               </menus>
             </MenuBar>
-         </children>
-      </VBox>
-   </top>
-   <left>
+         </top>
+         <left>
       <VBox alignment="CENTER_LEFT" prefHeight="475.0" prefWidth="210.0" style="-fx-background-color: #38302D;" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Liste des Mâles : " textFill="WHITE">
+            <Label alignment="CENTER" prefHeight="20.0" prefWidth="210.0" text="Sélectionner le Père" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
@@ -57,6 +55,15 @@
                   <Insets left="10.0" />
                </VBox.margin>
             </Label>
+            <HBox alignment="CENTER" prefHeight="90.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/anonyme.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="212.0">
                <children>
                   <Label contentDisplay="CENTER" text="Groupe : " textFill="WHITE">
@@ -67,14 +74,8 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Label>
-                  <ComboBox prefHeight="10.0" prefWidth="100.0" style="-fx-background-color: #574F4D; -fx-border-color: black;">
-                   		<items>
-					        <FXCollections fx:factory="observableArrayList">
-					          <String fx:value="Apple" />
-					          <String fx:value="Orange" />
-					          <String fx:value="Pear" />
-					        </FXCollections>
-						</items>
+                  <ComboBox fx:id="cboGroupeMale" prefHeight="10.0" prefWidth="100.0" style="-fx-background-color: #574F4D; -fx-border-color: black;">
+                   		
                   </ComboBox>
                   <Button maxHeight="21.0" maxWidth="21.0" minHeight="21.0" minWidth="21.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="21.0" style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" text="+">
                      <HBox.margin>
@@ -96,6 +97,10 @@
                <content>
                   <VBox prefHeight="195.0" prefWidth="195.0">
                      <children>
+                     <ToggleButton>
+                     	<toggleGroup>
+                        	<ToggleGroup fx:id="selectMale" />
+                     	</toggleGroup>
                         <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #7E7673;">
                            <children>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -111,6 +116,7 @@
                               <Insets />
                            </opaqueInsets>
                         </HBox>
+                      </ToggleButton>
                         <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: #6A6562;">
                            <children>
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -207,7 +213,7 @@
    <right>
       <VBox alignment="CENTER_LEFT" prefHeight="417.0" prefWidth="210.0" style="-fx-background-color: #38302D;" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER_RIGHT" text="Liste des Femelles : " textFill="WHITE">
+            <Label alignment="CENTER" prefWidth="210.0" text="Sélectionner la Mère" textFill="WHITE">
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin>
@@ -215,6 +221,15 @@
                   <Font size="14.0" />
                </font>
             </Label>
+            <HBox alignment="CENTER" prefHeight="90.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/anonyme.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="31.0" prefWidth="202.0">
                <children>
                   <Label text="Groupe : " textFill="WHITE">
@@ -350,75 +365,55 @@
          </children>
       </VBox>
    </right>
-   <center>
-      <GridPane id="grid" alignment="CENTER" style="-fx-background-color: #6A6562;" BorderPane.alignment="CENTER">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+         <center>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #6A6562;" BorderPane.alignment="CENTER">
                <children>
-                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefWidth="101.0" style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" text="Trouver Mâle">
-                     <VBox.margin>
-                        <Insets bottom="5.0" />
-                     </VBox.margin>
-                  </Button>
-                  <ImageView fitHeight="81.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imNewMuldo" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../image/dore.png" />
                      </image>
                      <VBox.margin>
-                        <Insets bottom="5.0" />
+                        <Insets />
                      </VBox.margin>
                   </ImageView>
-                  <Label text="Propriétaire : xxxxx" textFill="WHITE" />
-                  <Label text="Saillies : x/x" textFill="WHITE" />
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="450.0" spacing="5.0">
+                     <children>
+                  		<ToggleButton fx:id="tgrbMale" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0">
+                     		<toggleGroup>
+                        		<ToggleGroup fx:id="sexe" />
+                     		</toggleGroup>
+                     	</ToggleButton>
+                  		<ToggleButton fx:id="tgrbFemelle" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" toggleGroup="$sexe" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="27.0" prefWidth="450.0">
+                     <children>
+                        <Label text="Couleur : " textFill="WHITE" />
+                        <ComboBox fx:id="cboChoiceColor" onAction="#choiceColor" prefHeight="27.0" prefWidth="104.0" style="-fx-background-color: #574F4D; -fx-border-color: black;" styleClass="combobox">
+                        </ComboBox>
+                     </children>
+                  </HBox>
+                  <TextField fx:id="txtName" maxWidth="150.0" prefHeight="25.0" prefWidth="150.0" promptText="Nom*" style="-fx-background-color: #574F4D; -fx-border-color: black; -fx-text-fill: white ;" />
+                  <HBox alignment="CENTER" prefHeight="33.0" prefWidth="450.0">
+                     <children>
+                        <Label text="Nb de Saillies : " textFill="WHITE" />
+                        <TextField fx:id="txtNbSaillies" prefWidth="40.0" style="-fx-background-color: #574F4D; -fx-border-color: black; -fx-text-fill: white ;" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="31.0" prefWidth="450.0" spacing="5.0">
+                     <children>
+                        <Label text="Groupe : " textFill="WHITE" />
+                        <ComboBox fx:id="cboGroupe" prefHeight="25.0" prefWidth="112.0" style="-fx-background-color: #574F4D; -fx-border-color: black;" />
+                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="26.0" style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" text="+" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="68.0" prefWidth="450.0" spacing="20.0">
+                     <children>
+                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#validateNewMuldo" prefWidth="58.0" style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" text="Valider" />
+                        <Button mnemonicParsing="false" onAction="#cancelNewMuldo" style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" text="Annuler" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
-               <children>
-                  <Button mnemonicParsing="false" style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" text="Trouver Femelle">
-                     <VBox.margin>
-                        <Insets bottom="5.0" />
-                     </VBox.margin>
-                  </Button>
-                  <ImageView fitHeight="81.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../image/dore.png" />
-                     </image>
-                     <VBox.margin>
-                        <Insets bottom="5.0" />
-                     </VBox.margin>
-                  </ImageView>
-                  <Label text="Propiétaire : xxxxx" textFill="WHITE" />
-                  <Label text="Saillies : x/x" textFill="WHITE" />
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <children>
-                  <ImageView fitHeight="81.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
-                     <VBox.margin>
-                        <Insets bottom="5.0" />
-                     </VBox.margin>
-                     <image>
-                        <Image url="@../image/anonyme.png" />
-                     </image>
-                  </ImageView>
-                  <Label text="Nb de saillies max : x/x" textFill="WHITE" />
-               </children>
-            </VBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
-               <children>
-                  <Button alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);" text="Feconder" />
-               </children>
-            </HBox>
-         </children>
-      </GridPane>
-   </center>
-</BorderPane>
+         </center>
+      </BorderPane>
