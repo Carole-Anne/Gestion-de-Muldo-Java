@@ -7,12 +7,63 @@
 	-fx-background-size: 100% 100%;
 }
 
+.listLeftRight{
+	-fx-background-color: #38302D;
+}
+
+.center{
+	-fx-background-color: #6A6562;
+}
+
+.menu{
+	-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);
+}
+
 .pair{
 	-fx-background-color: #6A6562;
 }
 
 .impair{
 	-fx-background-color: #7E7673;
+}
+
+.pair:hover,
+.impair:hover{
+	-fx-background-color: #F88E38;
+}
+
+.selected{
+	-fx-background-color: #F88E38;
+}
+
+.textField{
+	-fx-background-color: #574F4D;
+	-fx-text-fill: white ;
+	-fx-border-color: black;
+}
+
+.labelFenetre{	
+	-fx-text-fill: white ;
+	-fx-font-size: 14;
+}
+
+.labelList{	
+	-fx-text-fill: white ;
+	-fx-font-size: 11;
+}
+
+.labelFenetreTitre{
+	-fx-text-fill: white ;
+	-fx-font-size: 18;
+}
+
+.button{
+	-fx-background-color: linear-gradient(to bottom, #FF8D2A, #B9450A);
+}
+
+.combobox{
+	-fx-background-color: #574F4D; 
+	-fx-border-color: black;
 }
 
 .combobox .cell{
@@ -24,21 +75,13 @@
 	-fx-background-color: #F88E38;
 }
 
-.toggle-button:hover{
+#sexeM:hover,
+#sexeF:hover{
 	-fx-background-color: #F88E38;
 }
 
-.toggle-button:selected{
+#sexeM:selected,
+#sexeF:selected{
 	-fx-background-color: green;
-}
-
-#tgrbMale{
-	-fx-background-image: url("./../image/male.png");
-	/*-fx-background-color: #6A6562*/
-}
-
-#tgrbFemelle{
-	-fx-background-image: url("./../image/femelle.png");
-	-fx-background-color: #6A6562;
 }
 

@@ -8,21 +8,37 @@ import java.util.ResourceBundle;
 import Entities.Couleur;
 import Entities.Groupe;
 import Entities.IEntities;
+import Entities.Muldo;
+import Entities.Proprietaire;
 import Services.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-public class NewMuldoController implements Initializable{
+public class NewMuldoController extends AbstractController implements Initializable{
+	
+	private List<VBox> vbs;
+	
+	@FXML
+	private VBox vbMaleGroupe;
+	
+	@FXML
+	private VBox vbGroupe;
+	
+	@FXML
+	private VBox vbFemelleGroupe;
 	
 	@FXML
 	 private ComboBox<Couleur> cboChoiceColor;
@@ -36,26 +52,95 @@ public class NewMuldoController implements Initializable{
 	@FXML 
 	private ComboBox<IEntities> cboGroupeMale;
 	
+	@FXML
+	private ComboBox<IEntities> cboGroupeFemelle;
+	
 	@FXML 
 	private ComboBox<IEntities> cboGroupe;
+	
+	@FXML 
+	private ComboBox<Proprietaire> cboProp;
 	 
 	@FXML
 	private ImageView imNewMuldo;
 	
 	@FXML
 	private ToggleGroup tgSexe;
+	
+	@FXML
+	private RadioButton sexeM;
+	@FXML
+	private RadioButton sexeF;
+	
+	@FXML
+	private VBox listMale;
+	private List<HBox> males;
+	private int idMalesSelected = 0;
+	
+	@FXML private ImageView imMuldoMale;
+	
+	@FXML
+	private VBox listFemelle;
+	private List<HBox> femelles;
+	private int idFemellesSelected = 0;
+
+	@FXML private ImageView imMuldoFemelle;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		List<Couleur> list = Main.repColor.getAll();
 		ObservableList<Couleur> value = FXCollections.observableList(list);
 		cboChoiceColor.getItems().addAll(value);
+		cboChoiceColor.setValue(list.get(0));
+		imNewMuldo.setImage(new Image(list.get(0).getUrl()));
+		
+		ObservableList<IEntities> groupes = getListGroup();
+		cboGroupeMale.getItems().addAll(groupes);
+		cboGroupeFemelle.getItems().addAll(groupes);
+		ObservableList<Proprietaire> listProp = getListProp();
+		cboProp.getItems().addAll(listProp);
+		cboProp.setValue(listProp.get(0));
+		cboGroupe.getItems().addAll(getListTroup());
+		
+		vbs = new ArrayList<VBox>();
+		vbs.add(vbMaleGroupe);
+		vbs.add(vbFemelleGroupe);
+		vbs.add(vbGroupe);
+		
+		sexeM.setGraphic(new ImageView(new Image("./image/male.png")));
+		sexeM.setUserData(0);
+		sexeF.setGraphic(new ImageView(new Image("./image/femelle.png")));
+		sexeF.setUserData(1);
+		
+		//Initialisation des listes de muldo
+		List<Muldo> muldosM = Main.repMuldo.getAll(0);
+		males = createList(muldosM, listMale);
+		if(muldosM.size() != 0){
+			isSelected(males.get(0));
+		}
+		listMale.getChildren().addAll(males);
+		List<Muldo> muldosF = Main.repMuldo.getAll(1);
+		femelles = createList(muldosF, listFemelle);
+		if(muldosF.size() != 0){
+			isSelected(femelles.get(0));
+		}
+		listFemelle.getChildren().addAll(femelles);
+	}
+	
 
-		List<Groupe> groupes = Main.repGroupe.getAll();
-		List<IEntities> entities = new ArrayList<IEntities>(groupes);
-		entities.addAll(list);
-		ObservableList<IEntities> listGroupe = FXCollections.observableList(entities);
-		cboGroupe.getItems().addAll(listGroupe);
+	@FXML
+	private void addGroupeMale(){
+		addGroupe(vbMaleGroupe);
+	}
+	
+	@FXML
+	private void addGroupeFemelle(){
+		addGroupe(vbFemelleGroupe);
+	}
+	
+	@FXML
+	private void addGroupeCenter(){
+		addGroupe(vbGroupe);
 	}
 	
 	@FXML
@@ -70,11 +155,17 @@ public class NewMuldoController implements Initializable{
 		goPrincipalView();
 	 }
 	
+	@SuppressWarnings("unchecked")
 	@FXML 
 	private void validateNewMuldo() throws IOException{	
+		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR); 
 		boolean goodFormul = true;
 		String name = txtName.getText();
 		String nbSaillie = txtNbSaillies.getText();
+		Label lbmere = (Label)(femelles.get(idFemellesSelected).getChildren().get(1));
+		Muldo mere = Main.repMuldo.getByName(lbmere.getText()).get(0);
+		Label lbpere = (Label)(males.get(idMalesSelected).getChildren().get(1));
+		Muldo pere = Main.repMuldo.getByName(lbpere.getText()).get(0);
 		if(!name.matches("[a-zA-Z]{1,16}")){
 			goodFormul = false;
 			txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: red; -fx-text-fill: white ;");
@@ -93,20 +184,121 @@ public class NewMuldoController implements Initializable{
 		}else{
 			cboChoiceColor.setStyle("-fx-background-color: #574F4D; -fx-border-color: green; -fx-text-fill: white ;");
 		}
-		if(goodFormul){
-			//TODO enregistrer newMuldo
+		if(goodFormul){	
+			Muldo m = new Muldo();
+			m.setSexe(Integer.parseInt(tgSexe.getSelectedToggle().getUserData().toString()));
+			m.setCouleur(cboChoiceColor.getValue());
+			m.setNom(name);
+			m.setNbenfant(0);
+			m.setNbsaillies(Integer.parseInt(nbSaillie));
+			m.setFecond(false);
+			m.setMuldoMere(mere);
+			m.setMuldoPere(pere);
+			m.setProp(cboProp.getValue());
+			ObservableList<Node> listGroupes = vbGroupe.getChildren();
+			for(int i = 0; i<listGroupes.size(); i++){
+				Node cbo = ( (HBox)listGroupes.get(i)).getChildren().get(0);
+				m.setTroupeau(((ComboBox<Groupe>)cbo).getValue());
+			}
+			m.setVisible(true);
+			
+			Main.repMuldo.add(m);
 			goPrincipalView();
 		}
+		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT); 
+	}
+
+	@Override
+	protected void suppGroupe(Object o) {
+		boolean trouve = false;
+		for(int j = 0; j<vbs.size(); j++){
+			List<Node> childrens = vbs.get(j).getChildren();
+			int nbChildren = childrens.size();
+			for(int i = 0; i<nbChildren; i++){
+				if(((HBox)childrens.get(i)).getChildren().size()>2){
+					Object obj = ((HBox)childrens.get(i)).getChildren().get(2);
+					if(o.equals(obj)){
+						childrens.remove(childrens.get(i));
+						trouve = true;
+						break;
+					}
+				}
+			}
+			if(trouve){
+				if(nbChildren == 2){
+					HBox firstHBox = (HBox)childrens.get(0);
+					firstHBox.getChildren().remove(firstHBox.getChildren().size()-1);
+					break;
+				}
+			}
+		}
+	}
+
+
+	@Override
+	protected void isSelected(Object hbox) {
+		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR); 
+		int i = 0;
+		int l = males.size();
+		while(i<l && !hbox.equals(males.get(i))){
+			i++;
+		}
+		if(i<l){
+			if(idMalesSelected%2==0){
+				males.get(idMalesSelected).getStyleClass().clear();
+				males.get(idMalesSelected).getStyleClass().add("pair");
+			}else{
+				males.get(idMalesSelected).getStyleClass().clear();
+				males.get(idMalesSelected).getStyleClass().add("impair");
+			}
+			males.get(i).getStyleClass().clear();
+			males.get(i).getStyleClass().add("selected");
+			idMalesSelected = i;
+			modifieMuldoMale(males.get(i));
+		}else{
+			//la box n'est pas une box Male
+			i = 0;
+			l = femelles.size();
+			while(i<l && !hbox.equals(femelles.get(i))){
+				i++;
+			}
+			if(i<l){
+				if(i%2==0){
+					femelles.get(idFemellesSelected).getStyleClass().clear();
+					femelles.get(idFemellesSelected).getStyleClass().add("pair");
+				}else{
+					femelles.get(idFemellesSelected).getStyleClass().clear();
+					femelles.get(idFemellesSelected).getStyleClass().add("impair");
+				}
+				femelles.get(i).getStyleClass().clear();
+				femelles.get(i).getStyleClass().add("selected");
+				idFemellesSelected = i;
+				modifieMuldoFemelle(femelles.get(i));
+			}
+		}
+		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT); 
+		
 	}
 	
-	private void goPrincipalView() throws IOException {		
-		 double height = Main.primaryStage.getScene().getHeight();
-		 double width = Main.primaryStage.getScene().getWidth();
-		 BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("PrincipalView.fxml"));
-		 Scene scene = new Scene(root,width,height);
-		 scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		 Main.primaryStage.setScene(scene);
-		 Main.primaryStage.show();
-	 }
+	private void modifieMuldoMale(HBox hBox) {
+		Label l = ((Label)hBox.getChildren().get(1));
+		Muldo m = Main.repMuldo.getByName(l.getText()).get(0);
+		String im = m.getCouleur().getUrl();
+		imMuldoMale.setImage(new Image(im));
+	}
+	
+	private void modifieMuldoFemelle(HBox hBox) {
+		Label l = ((Label)hBox.getChildren().get(1));
+		Muldo m = Main.repMuldo.getByName(l.getText()).get(0);
+		String im = m.getCouleur().getUrl();
+		imMuldoFemelle.setImage(new Image(im));
+	}
+
+
+	@Override
+	protected void searchListMuldo(Object source) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
