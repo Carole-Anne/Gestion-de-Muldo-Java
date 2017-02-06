@@ -3,7 +3,6 @@ package Repositories;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import javax.persistence.*;
-
 import Entities.IEntities;
 
 public abstract class AbstractRepository<T extends IEntities> implements IRepository<T>, IUoW {
@@ -83,6 +82,39 @@ public abstract class AbstractRepository<T extends IEntities> implements IReposi
 	@Override
 	public void commit(){
 		getTransaction().commit();
+	}
+	
+	@Override
+	public void add(T entity) {
+		save(entity);		
+		commit();
+	}
+	
+	/***
+	 * Vérifie que le nom n'hésiste pas déjà la base de données
+	 * @param name
+	 * @return true si name n'hésiste pas dans la base de données
+	 */
+	@Override
+	public boolean getNameFind(String name){
+		boolean isFind = false;
+		int lenghtName = name.length();
+		String request = "FROM "+entityClass.getSimpleName()+" WHERE nom LIKE '"+name+"'";
+		List<T> listContainerName = getByWhere(request);
+		int l = listContainerName.size();
+		for (int i = 0; i<l; i++){
+			if(listContainerName.get(i).getNom().length() == lenghtName){
+				isFind = true;
+				break;
+			}
+		}
+		return isFind;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> getByName(String name){
+		return em.createQuery("FROM "+entityClass.getSimpleName()+" WHERE nom='"+name+"'").getResultList();
 	}
 	
 }

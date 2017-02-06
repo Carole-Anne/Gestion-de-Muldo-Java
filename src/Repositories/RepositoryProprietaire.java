@@ -14,7 +14,7 @@ public class RepositoryProprietaire extends AbstractRepository<Proprietaire>{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Proprietaire> getAll(){
-		return getEntityManager().createQuery("SELECT g FROM Groupe g WHERE type="+1).getResultList();
+		return getEntityManager().createQuery("SELECT g FROM Groupe g WHERE type=Proprietaire").getResultList();
 	}
 
 }
