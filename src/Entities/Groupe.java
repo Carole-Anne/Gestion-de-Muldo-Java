@@ -57,5 +57,9 @@ public abstract class Groupe implements Serializable, IEntities {
 	public void setMuldos(List<Muldo> muldos) {
 		this.muldos = muldos;
 	}
+	
+	public String toString(){
+		return nom;
+	}
 
 }

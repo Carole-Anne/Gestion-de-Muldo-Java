@@ -18,7 +18,7 @@ public class Couleur implements Serializable, IEntities{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 
-	private String couleur;
+	private String nom;
 
 	private String url;
 	
@@ -39,12 +39,12 @@ public class Couleur implements Serializable, IEntities{
 		this.id = id;
 	}
 
-	public String getCouleur() {
-		return this.couleur;
+	public String getNom() {
+		return this.nom;
 	}
 
-	public void setCouleur(String couleur) {
-		this.couleur = couleur;
+	public void setNom(String couleur) {
+		this.nom = couleur;
 	}
 
 	public String getUrl() {
@@ -86,7 +86,7 @@ public class Couleur implements Serializable, IEntities{
 	}
 	
 	public String toString(){
-		return couleur;
+		return nom;
 		
 	}
 

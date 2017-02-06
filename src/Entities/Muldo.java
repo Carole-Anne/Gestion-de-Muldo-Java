@@ -2,6 +2,8 @@ package Entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,7 +28,7 @@ public class Muldo implements Serializable, IEntities {
 
 	private String nom;
 
-	private Integer sexe;
+	private Integer sexe;//0 = male, 1 = femelle
 
 	private Boolean visible;
 
@@ -67,6 +69,7 @@ public class Muldo implements Serializable, IEntities {
 	private List<Muldo> muldosPere;
 
 	public Muldo() {
+		groupes = new ArrayList<Groupe>();
 	}
 
 	public Integer getId() {
@@ -203,6 +206,41 @@ public class Muldo implements Serializable, IEntities {
 	
 	public String toString(){
 		return nom;
+	}
+
+	public String getProprietaire() {
+		int l = groupes.size();
+		for(int i = 0; i<l; i++){
+			if(groupes.get(i).getClass() == Entities.Proprietaire.class){
+				return groupes.get(i).getNom();			
+			}
+		}
+		return "?";
+	}
+
+	public void setProp(Proprietaire value) {
+		for(int i = 0; i<groupes.size(); i++){
+			if(groupes.get(i).getClass() == Entities.Proprietaire.class){
+				groupes.set(i, value);		
+			}
+		}
+		if(groupes.size() == 0){
+			groupes.add(value);
+		}
+		
+	}
+
+	public void setTroupeau(Groupe groupes2) {
+		boolean find = false;
+		for(int i = 0; i<groupes.size(); i++){
+			if(groupes.get(i).getClass() == Entities.Troupeau.class && groupes.get(i).getId()==groupes2.getId()){
+				find = true;		
+			}
+		}
+		if(groupes.size() == 0 || !find){
+			groupes.add(groupes2);
+		}
+		
 	}
 
 }
