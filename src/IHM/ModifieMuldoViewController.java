@@ -11,8 +11,10 @@ import Services.Main;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -139,9 +141,9 @@ public class ModifieMuldoViewController extends AbstractController implements In
 		addTroupeau(vbGroupe);
 	}
 
+	@SuppressWarnings("unchecked")
 	@FXML
-	private void mofifieMuldo() throws IOException{
-		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR);
+	private void modifieMuldo() throws IOException{
 		boolean goodFormul = true;
 		String name = txtName.getText();
 		String saillie = txtSailliesUse.getText();
@@ -151,7 +153,7 @@ public class ModifieMuldoViewController extends AbstractController implements In
 		}else{
 			txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: green; -fx-text-fill: white ;");
 		}
-		if(!saillie.matches("[0-4]{1}")){
+		if(!saillie.matches("[0-4]{1}") || Integer.parseInt(saillie)>muldoSelected.getNbsaillies()){
 			goodFormul = false;
 			txtSailliesUse.setStyle("-fx-background-color: #574F4D; -fx-border-color: red; -fx-text-fill: white ;");
 		}else{
@@ -162,12 +164,19 @@ public class ModifieMuldoViewController extends AbstractController implements In
 			muldoSelected.setNom(name);
 			muldoSelected.setProp(cbProp.getValue());
 			muldoSelected.setFecond(isFecond.isSelected());
+			//Récupérer les groupes
+			Troupeau troup;
+			for(Node hb: vbGroupe.getChildren()){
+				troup = ((ComboBox<Troupeau>)((HBox)hb).getChildren().get(0)).getValue();
+				if(troup != null){
+					muldoSelected.setTroupeau(troup);
+				}
+			}
+			muldoSelected.setNbSailliesUsed(Integer.parseInt(saillie));
 			Main.repMuldo.update(muldoSelected);
 			Main.repMuldo.commit();
 			goPrincipalView();
-			//TODO modifie le nombre de saillies restantes // Les groupes
 		}
-		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT);
 	}
 	
 	@FXML
@@ -177,7 +186,6 @@ public class ModifieMuldoViewController extends AbstractController implements In
 
 	@Override
 	protected void isSelected(Object hbox) {
-		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR);
 		int i = 0;
 		int l = males.size();
 		while(i<l && !hbox.equals(males.get(i))){
@@ -190,7 +198,6 @@ public class ModifieMuldoViewController extends AbstractController implements In
 					femelles.get(idFemelle).getStyleClass().clear();
 					femelles.get(idFemelle).getStyleClass().add("pair");
 				}else{
-					System.out.println("Clear femelle : "+idFemelle);
 					femelles.get(idFemelle).getStyleClass().clear();
 					femelles.get(idFemelle).getStyleClass().add("impair");
 				}
@@ -239,19 +246,16 @@ public class ModifieMuldoViewController extends AbstractController implements In
 				modifieMuldo(femelles.get(i));
 			}
 		}
-		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT);
 		
 	}
 	
 	private void modifieMuldo(HBox hBox) {
-		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR);
-		//TODO A modifier
 		Label l = ((Label)hBox.getChildren().get(1));
 		Muldo m = Main.repMuldo.getByName(l.getText()).get(0);
 		muldoSelected = m;
 		String im = m.getCouleur().getUrl();
 		imMuldo.setImage(new Image(im));
-		txtSailliesUse.setText((m.getNbenfant()/2)+"");
+		txtSailliesUse.setText(m.getNbSailliesUsed()+"");
 		txtName.setText(m.getNom());
 		lbNbSaille.setText("/"+m.getNbsaillies());
 		if(m.getFecond()){
@@ -265,7 +269,74 @@ public class ModifieMuldoViewController extends AbstractController implements In
 		}else{
 			cbProp.setValue(Main.repProp.getByName(m.getProprietaire()).get(0));
 		}
-		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT);
+		//Clean vbGroupe qui contient toutes les HBox de groupes
+		vbGroupe.getChildren().clear();
+		
+		//Affiche les groupes du muldo
+		List<Groupe> groupes = m.getGroupes();
+		boolean haveTroupeau = false;
+		for(Groupe g : groupes){
+			if(g.getClass() == Troupeau.class){
+				afficherTroupeau((Troupeau)g);
+				haveTroupeau = true;
+			}
+		}
+		if(!haveTroupeau){
+			vbGroupe.getChildren().add(createHBoxGroupeEmpty(vbGroupe));
+		}
+	}
+	
+	private HBox createHBoxGroupeEmpty(VBox vb) {
+		HBox hb = new HBox();
+		hb.setAlignment(Pos.CENTER);
+		hb.setSpacing(5);
+		ComboBox<Troupeau> cbo = createCombobobxTroup(getListTroup());
+		hb.getChildren().add(cbo);
+		Button bAdd = createButtonAdd(vb);
+		hb.getChildren().add(bAdd);
+		return hb;
+	}
+	
+	private HBox createHBoxGroupe(VBox vb, Troupeau t) {
+		HBox hb = new HBox();
+		hb.setAlignment(Pos.CENTER);
+		hb.setSpacing(5);
+		ComboBox<Troupeau> cbo = createCombobobxTroup(getListTroup());
+		cbo.setValue(t);
+		hb.getChildren().add(cbo);
+		Button bAdd = createButtonAdd(vb);
+		hb.getChildren().add(bAdd);
+		return hb;
+	}
+
+
+	private void afficherTroupeau(Troupeau t) {
+		List<Node> childrens = vbGroupe.getChildren();
+		int nbChildren = childrens.size();
+		if(nbChildren == 0){
+			childrens.add(createHBoxGroupe(vbGroupe, t));
+		}else if(nbChildren == 1){
+			HBox children = (HBox)childrens.get(0);
+			children.setPadding(new Insets(0, 5, 0, 0));
+			children.getChildren().add(createButtonSupp());
+			childrens.add(createNewTroupeau(vbGroupe, t));
+		}else if(nbChildren<5){
+			childrens.add(createNewTroupeau(vbGroupe, t));
+		}
+	}
+	
+	private HBox createNewTroupeau(VBox vb, Troupeau t){
+		HBox newChildren = new HBox();
+		newChildren.setAlignment(Pos.CENTER);
+		newChildren.setSpacing(5);
+		ComboBox<Troupeau> newCombobox = createCombobobxTroup(getListTroup());
+		newCombobox.setValue(t);
+		Button newButtonAdd = createButtonAdd(vb) ;
+		Button newButtonSupp = createButtonSupp();
+		newChildren.getChildren().add(newCombobox);
+		newChildren.getChildren().add(newButtonAdd);
+		newChildren.getChildren().add(newButtonSupp);
+		return newChildren;
 	}
 
 

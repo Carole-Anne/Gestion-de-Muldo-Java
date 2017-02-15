@@ -193,7 +193,13 @@ public class NewMuldoController extends AbstractController implements Initializa
 			m.setNbsaillies(Integer.parseInt(nbSaillie));
 			m.setFecond(false);
 			m.setMuldoMere(mere);
+			if(mere.getId() != 2){
+				mere.addNbenfant();
+			}
 			m.setMuldoPere(pere);
+			if(pere.getId() != 1){
+				pere.addNbenfant();
+			}
 			m.setProp(cboProp.getValue());
 			ObservableList<Node> listGroupes = vbGroupe.getChildren();
 			for(int i = 0; i<listGroupes.size(); i++){

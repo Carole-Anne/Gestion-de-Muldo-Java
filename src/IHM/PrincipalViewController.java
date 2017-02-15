@@ -1,8 +1,8 @@
 package IHM;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
 import Entities.IEntities;
 import Entities.Muldo;
 import Services.Main;
@@ -23,6 +23,9 @@ public class PrincipalViewController extends AbstractController implements Initi
 	
 	private List<ComboBox<IEntities>> cbosMale;
 	private List<ComboBox<IEntities>> cbosFemelle;
+	
+	private Muldo mMale;
+	private Muldo mFemelle;
 	
 	@FXML
 	private ComboBox<IEntities> cboGroupeMale;
@@ -83,6 +86,18 @@ public class PrincipalViewController extends AbstractController implements Initi
 			isSelected(femelles.get(0));
 		}
 		listFemelle.getChildren().addAll(femelles);
+	}
+	
+	@FXML
+	private void arbreMale() throws IOException{
+		Main.service.createArbre(mMale);
+		goArbre();
+	}
+	
+	@FXML
+	private void arbreFemelle() throws IOException{
+		Main.service.createArbre(mFemelle);
+		goArbre();
 	}
 
 	@FXML
@@ -166,18 +181,20 @@ public class PrincipalViewController extends AbstractController implements Initi
 	private void modifieMuldoMale(HBox hBox) {
 		Label l = ((Label)hBox.getChildren().get(1));
 		Muldo m = Main.repMuldo.getByName(l.getText()).get(0);
+		mMale = m;
 		String im = m.getCouleur().getUrl();
 		imMuldoMale.setImage(new Image(im));
-		lbNbSailleMale.setText("Saillies : "+m.getNbenfant()/2+"/"+m.getNbsaillies());
+		lbNbSailleMale.setText("Saillies : "+m.getNbSailliesUsed()+"/"+m.getNbsaillies());
 		lbPropMale.setText("Propriétaire : "+m.getProprietaire());
 	}
 	
 	private void modifieMuldoFemelle(HBox hBox) {
 		Label l = ((Label)hBox.getChildren().get(1));
 		Muldo m = Main.repMuldo.getByName(l.getText()).get(0);
+		mFemelle = m;
 		String im = m.getCouleur().getUrl();
 		imMuldoFemelle.setImage(new Image(im));
-		lbNbSailleFemelle.setText("Saillies : "+m.getNbenfant()/2+"/"+m.getNbsaillies());
+		lbNbSailleFemelle.setText("Saillies : "+m.getNbSailliesUsed()+"/"+m.getNbsaillies());
 		lbPropFemelle.setText("Propriétaire : "+m.getProprietaire());
 	}
 

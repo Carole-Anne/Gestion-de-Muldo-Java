@@ -3,7 +3,6 @@ package IHM;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import Entities.Couleur;
 import Entities.Groupe;
 import Entities.IEntities;
@@ -19,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,12 +28,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 public abstract class AbstractController {
 	
 	@FXML
 	 private void newMuldo() throws IOException {		
-		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR); 
 		double height = Main.primaryStage.getScene().getHeight();
 		double width = Main.primaryStage.getScene().getWidth();
 		BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("NewMuldo.fxml"));
@@ -44,12 +42,10 @@ public abstract class AbstractController {
 		 
 		Main.primaryStage.setScene(scene);
 		Main.primaryStage.show();
-		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT); 
 	 }
 
 	 @FXML
-	 private void gestionGroupe() throws IOException {	
-		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR); 
+	 private void gestionGroupe() throws IOException {	 
 		double height = Main.primaryStage.getScene().getHeight();
 		double width = Main.primaryStage.getScene().getWidth();
 		BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("GroupeView.fxml"));
@@ -58,12 +54,10 @@ public abstract class AbstractController {
 		 
 		Main.primaryStage.setScene(scene);
 		Main.primaryStage.show();
-		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT); 
 	 }
 	 
 	 @FXML
 	 private void modifieMuldo() throws IOException{
-		Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR); 
 		double height = Main.primaryStage.getScene().getHeight();
 		double width = Main.primaryStage.getScene().getWidth();
 		BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("ModifieMuldoView.fxml"));
@@ -71,17 +65,22 @@ public abstract class AbstractController {
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		 
 		Main.primaryStage.setScene(scene);
-		Main.primaryStage.show();
-		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT); 
+		Main.primaryStage.show(); 
 	 }
 	 
 	 @FXML
-	 private void suppMuldo(){
-		 //TODO
+	 private void suppMuldo() throws IOException{
+		double height = Main.primaryStage.getScene().getHeight();
+		double width = Main.primaryStage.getScene().getWidth();
+		BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("SuppMuldoView.fxml"));
+		Scene scene = new Scene(root,width,height);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		 
+		Main.primaryStage.setScene(scene);
+		Main.primaryStage.show(); 
 	 }
 	 
-	 protected void goPrincipalView() throws IOException {	
-		 Main.primaryStage.getScene().setCursor(Cursor.CROSSHAIR); 	
+	 protected void goPrincipalView() throws IOException {		
 		 double height = Main.primaryStage.getScene().getHeight();
 		 double width = Main.primaryStage.getScene().getWidth();
 		 BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("PrincipalView.fxml"));
@@ -89,7 +88,18 @@ public abstract class AbstractController {
 		 scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		 Main.primaryStage.setScene(scene);
 		 Main.primaryStage.show();
-		 Main.primaryStage.getScene().setCursor(Cursor.DEFAULT); 
+	 }
+	 
+	 protected void goArbre() throws IOException{
+		Stage s = new Stage();
+		double height = 500;
+		double width = 950;
+		BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("ArbreMuldoView.fxml"));
+		Scene scene = new Scene(root,width,height);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			 
+		s.setScene(scene);
+		s.show();
 	 }
 	 
 	 
@@ -169,7 +179,7 @@ public abstract class AbstractController {
 			return listTroup;
 		}
 		
-		private ComboBox<IEntities> createCombobox(ObservableList<IEntities> list){
+		protected ComboBox<IEntities> createCombobox(ObservableList<IEntities> list){
 			ComboBox<IEntities> newCombobox = new ComboBox<IEntities>(list);
 			newCombobox.setPrefWidth(130);
 			newCombobox.setMinWidth(130);
@@ -178,7 +188,7 @@ public abstract class AbstractController {
 			return newCombobox;
 		}
 		
-		private ComboBox<Troupeau> createCombobobxTroup(ObservableList<Troupeau> list){
+		protected ComboBox<Troupeau> createCombobobxTroup(ObservableList<Troupeau> list){
 			ComboBox<Troupeau> newCombobox = new ComboBox<Troupeau>(list);
 			newCombobox.setPrefWidth(130);
 			newCombobox.setMinWidth(130);
@@ -187,26 +197,26 @@ public abstract class AbstractController {
 			return newCombobox;
 		}
 		
-		private Button createButtonAdd(VBox vb){
-			Button suppGroupe = new Button("+");
-			suppGroupe.setFont(new Font(10));
-			suppGroupe.setPrefWidth(21);
-			suppGroupe.setPrefHeight(21);
-			suppGroupe.setMaxWidth(21);
-			suppGroupe.setMaxHeight(21);
-			suppGroupe.setMinWidth(21);
-			suppGroupe.setMinHeight(21);
-			suppGroupe.setOnAction(new EventHandler<ActionEvent>() {
+		protected Button createButtonAdd(VBox vb){
+			Button addGroupe = new Button("+");
+			addGroupe.setFont(new Font(10));
+			addGroupe.setPrefWidth(21);
+			addGroupe.setPrefHeight(21);
+			addGroupe.setMaxWidth(21);
+			addGroupe.setMaxHeight(21);
+			addGroupe.setMinWidth(21);
+			addGroupe.setMinHeight(21);
+			addGroupe.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override public void handle(ActionEvent e) {
 	            	addGroupe(vb);
 	            }
 	        });
-			return suppGroupe;
+			return addGroupe;
 		}
 		
 		
 		
-		private Button createButtonSupp(){
+		protected Button createButtonSupp(){
 			Button suppGroupe = new Button("-");
 			suppGroupe.setPrefWidth(21);
 			suppGroupe.setPrefHeight(21);
