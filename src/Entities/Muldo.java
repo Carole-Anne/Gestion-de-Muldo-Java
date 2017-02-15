@@ -25,6 +25,8 @@ public class Muldo implements Serializable, IEntities {
 	private Integer nbenfant;
 
 	private Integer nbsaillies;
+	
+	private int nbsailliesused;
 
 	private String nom;
 
@@ -241,6 +243,22 @@ public class Muldo implements Serializable, IEntities {
 			groupes.add(groupes2);
 		}
 		
+	}
+
+	public int getNbSailliesUsed() {
+		return nbsailliesused;
+	}
+
+	public void setNbSailliesUsed(int nbSailliesUsed) {
+		this.nbsailliesused = nbSailliesUsed;
+	}
+
+	public void addNbenfant() {
+		nbenfant++;		
+	}
+
+	public void suppNbEnfants() {
+		nbenfant--;
 	}
 
 }
