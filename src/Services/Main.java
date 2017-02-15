@@ -18,7 +18,7 @@ public class Main extends Application {
 	public static RepositoryGroupe repGroupe;
 	public static RepositoryTroupeau repTroupeau;
 	public static RepositoryProprietaire repProp;
-	
+	public static Service service;
 	
 	@Override
 	public void start(Stage ps) {
@@ -37,6 +37,7 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		EntityManagerFactory emf = CreateEntityManagerFactory.getInstance();
 		EntityManager em = emf.createEntityManager();
+		service = new Service();
 		repMuldo = new RepositoryMuldo(em);
 		repColor = new RepositoryCouleur(em);
 		List<Couleur> colors = repColor.getAll();
