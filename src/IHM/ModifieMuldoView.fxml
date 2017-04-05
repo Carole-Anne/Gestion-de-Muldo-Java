@@ -68,7 +68,7 @@
                         <children>
                            <HBox alignment="CENTER_LEFT" minWidth="190.0" prefHeight="27.0" prefWidth="190.0" spacing="5.0">
                               <children>
-                                    <ComboBox fx:id="cboGroupeMale" minWidth="130.0" prefHeight="27.0" prefWidth="130.0" styleClass="combobox">
+                                    <ComboBox fx:id="cboGroupeMale" onAction="#actionCombobox" minWidth="130.0" prefHeight="27.0" prefWidth="130.0" styleClass="combobox">
                  					</ComboBox>
                                     <Button maxHeight="21.0" maxWidth="21.0" minHeight="21.0" minWidth="21.0" mnemonicParsing="false" onAction="#addGroupeMale" prefHeight="21.0" prefWidth="21.0" text="+">
             	                        <font>
@@ -126,7 +126,7 @@
                         <children>
                            <HBox alignment="CENTER_LEFT" minWidth="190.0" prefHeight="27.0" prefWidth="190.0" spacing="5.0">
                               <children>
-                                    <ComboBox fx:id="cboGroupeFemelle" minWidth="130.0" prefHeight="27.0" prefWidth="130.0" styleClass="combobox">
+                                    <ComboBox fx:id="cboGroupeFemelle" onAction="#actionCombobox" minWidth="130.0" prefHeight="27.0" prefWidth="130.0" styleClass="combobox">
                  					</ComboBox>
                                     <Button maxHeight="21.0" maxWidth="21.0" minHeight="21.0" minWidth="21.0" mnemonicParsing="false" onAction="#addGroupeFemelle" prefHeight="21.0" prefWidth="21.0" text="+">
             	                        <font>

@@ -2,7 +2,11 @@ package IHM;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collector.*;
+import java.util.stream.Collectors;
+
 import Entities.Couleur;
 import Entities.Groupe;
 import Entities.IEntities;
@@ -134,6 +138,11 @@ public abstract class AbstractController {
 			newChildren.setAlignment(Pos.CENTER);
 			newChildren.setSpacing(5);
 			ComboBox<IEntities> newCombobox = createCombobox(getListGroup());
+			newCombobox.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override public void handle(ActionEvent e) {
+	            	actionCombobox(e);
+	            }
+	        });
 			Button newButtonAdd = createButtonAdd(vb) ;
 			Button newButtonSupp = createButtonSupp();
 			newChildren.getChildren().add(newCombobox);
@@ -141,7 +150,7 @@ public abstract class AbstractController {
 			newChildren.getChildren().add(newButtonSupp);
 			return newChildren;
 		}
-		
+
 		private HBox createNewTroupeau(VBox vb){
 			HBox newChildren = new HBox();
 			newChildren.setAlignment(Pos.CENTER);
@@ -156,9 +165,8 @@ public abstract class AbstractController {
 		}
 		
 		protected ObservableList<IEntities> getListGroup() {
-			List<Couleur> list = Main.repColor.getAll();
-			list.remove(0);
-			List<Groupe> groupes = Main.repGroupe.getAll();
+			List<Couleur> list = Main.service.getRepColor().getAll();
+			List<Groupe> groupes = Main.service.getRepGroupe().getAll();
 			List<IEntities> entities = new ArrayList<IEntities>(groupes);
 			entities.addAll(list);
 			ObservableList<IEntities> listGroupe = FXCollections.observableList(entities);
@@ -166,14 +174,14 @@ public abstract class AbstractController {
 		}
 
 		protected ObservableList<Proprietaire> getListProp() {
-			List<Proprietaire> groupes = Main.repProp.getAll();
+			List<Proprietaire> groupes = Main.service.getRepProp().getAll();
 			List<Proprietaire> entities = new ArrayList<Proprietaire>(groupes);
 			ObservableList<Proprietaire> listProp = FXCollections.observableList(entities);
 			return listProp;
 		}
 		
 		protected ObservableList<Troupeau> getListTroup() {
-			List<Troupeau> groupes = Main.repTroupeau.getAll();
+			List<Troupeau> groupes = Main.service.getRepTroupeau().getAll();
 			List<Troupeau> entities = new ArrayList<Troupeau>(groupes);
 			ObservableList<Troupeau> listTroup = FXCollections.observableList(entities);
 			return listTroup;
@@ -233,10 +241,11 @@ public abstract class AbstractController {
 		}
 		
 		
-		protected List<HBox> createList(List<Muldo> muldos, VBox viewList) {
+		protected List<HBox> createList(List<Muldo> muldos) {
 			List<HBox> list = new ArrayList<HBox>();
-			for(int i = 0; i<muldos.size(); i++){
-				Muldo m = muldos.get(i);
+			List<Muldo> muldoSorteds = muldos.stream().sorted((m1, m2)-> Integer.compare(m1.getCouleur().getId(), m2.getCouleur().getId())).collect(Collectors.toList());
+			for(int i = 0; i<muldoSorteds.size(); i++){
+				Muldo m = muldoSorteds.get(i);
 				HBox newMuldo = new HBox();
 				newMuldo.setSpacing(5.0);
 				newMuldo.setAlignment(Pos.CENTER_LEFT);
@@ -252,7 +261,7 @@ public abstract class AbstractController {
 				newMuldo.setOnMouseClicked(hbox ->{
 					isSelected(hbox.getSource());
 				});
-				
+				newMuldo.setId(m.getId().toString());
 				list.add(newMuldo);
 			}
 			while(list.size()<8){
@@ -268,6 +277,32 @@ public abstract class AbstractController {
 					newMuldo.getStyleClass().add("impair");
 				}
 				list.add(newMuldo);
+			}
+			return list;
+		}
+		
+		@SuppressWarnings("unchecked")
+		protected List<Integer> VBoxToCouleur(VBox vbGroupe) {
+			List<Integer> list = new ArrayList<Integer>();
+			List<Node> childrens = vbGroupe.getChildren(); //Liste de HBox
+			for(int i = 0; i<childrens.size(); i++){
+				ComboBox<IEntities> cbo = ((ComboBox<IEntities>)((HBox)childrens.get(i)).getChildren().get(0));
+				if(cbo.getValue()!=null && cbo.getValue().getClass() == Entities.Couleur.class){
+					list.add(cbo.getValue().getId());
+				}
+			}
+			return list;
+		}
+
+		@SuppressWarnings("unchecked")
+		protected List<Integer> VBoxGroupeToListId(VBox vbGroupe) {
+			List<Integer> list = new ArrayList<Integer>();
+			List<Node> childrens = vbGroupe.getChildren(); //Liste de HBox
+			for(int i = 0; i<childrens.size(); i++){
+				ComboBox<IEntities> cbo = ((ComboBox<IEntities>)((HBox)childrens.get(i)).getChildren().get(0));
+				if(cbo.getValue()!=null && cbo.getValue().getClass() != Entities.Couleur.class){
+					list.add( cbo.getValue().getId() );
+				}
 			}
 			return list;
 		}

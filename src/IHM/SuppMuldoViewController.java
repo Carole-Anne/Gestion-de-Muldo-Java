@@ -58,6 +58,7 @@ public class SuppMuldoViewController extends AbstractController  implements Init
 	private VBox listMale;
 	private List<HBox> males;
 	private int idMuldoSelected;
+	private int sexeMuldoSelected;
 	private Muldo muldoSelected;
 	
 	@FXML
@@ -71,11 +72,11 @@ public class SuppMuldoViewController extends AbstractController  implements Init
 		vbs.add(vbFemelleGroupe);
 		vbs.add(vbGroupe);
 		//Initialisation des listes de muldo
-		List<Muldo> muldosM = Main.repMuldo.getAllModifie(0);
-		males = createList(muldosM, listMale);
+		List<Muldo> muldosM = Main.service.getRepMuldo().getAllModifie(0);
+		males = createList(muldosM);
 		listMale.getChildren().addAll(males);
-		List<Muldo> muldosF = Main.repMuldo.getAllModifie(1);
-		femelles = createList(muldosF, listFemelle);
+		List<Muldo> muldosF = Main.service.getRepMuldo().getAllModifie(1);
+		femelles = createList(muldosF);
 		listFemelle.getChildren().addAll(femelles);
 		
 		if(muldosM.size()!=0){
@@ -115,71 +116,58 @@ public class SuppMuldoViewController extends AbstractController  implements Init
 
 	@Override
 	protected void isSelected(Object hbox) {
+		HBox hb = (HBox)hbox;
+		int id = Integer.parseInt(hb.getId());
+		List<HBox> muldoSelected;
+		boolean isMale;
+		System.out.println(Integer.parseInt(hb.getId()));
+		Muldo m = Main.service.getRepMuldo().getById(id);
+		if(m.getSexe() == 0){
+			isMale = true;
+			muldoSelected = males;
+		}else{
+			isMale = false;
+			muldoSelected = femelles;
+		}
+		modifieMuldo(m);
+		
+		//On modifie la selection dans la fenetre
 		int i = 0;
-		int l = males.size();
-		while(i<l && !hbox.equals(males.get(i))){
+		while(i<muldoSelected.size() && id!=Integer.parseInt(muldoSelected.get(i).getId())){
 			i++;
 		}
-		if(i<l){
-			if(idMuldoSelected<0){
-				int idFemelle = -idMuldoSelected - 1;
-				if(idFemelle%2==0){
-					femelles.get(idFemelle).getStyleClass().clear();
-					femelles.get(idFemelle).getStyleClass().add("pair");
-				}else{
-					femelles.get(idFemelle).getStyleClass().clear();
-					femelles.get(idFemelle).getStyleClass().add("impair");
-				}
+		if(sexeMuldoSelected == 0){
+			if(idMuldoSelected%2==0){
+				males.get(idMuldoSelected).getStyleClass().clear();
+				males.get(idMuldoSelected).getStyleClass().add("pair");
 			}else{
-				if(idMuldoSelected%2==0){
-					males.get(idMuldoSelected).getStyleClass().clear();
-					males.get(idMuldoSelected).getStyleClass().add("pair");
-				}else{
-					males.get(idMuldoSelected).getStyleClass().clear();
-					males.get(idMuldoSelected).getStyleClass().add("impair");
-				}
+				males.get(idMuldoSelected).getStyleClass().clear();
+				males.get(idMuldoSelected).getStyleClass().add("impair");
 			}
+		}else{
+			if(idMuldoSelected%2==0){
+				femelles.get(idMuldoSelected).getStyleClass().clear();
+				femelles.get(idMuldoSelected).getStyleClass().add("pair");
+			}else{
+				femelles.get(idMuldoSelected).getStyleClass().clear();
+				femelles.get(idMuldoSelected).getStyleClass().add("impair");
+			}
+		}
+
+		idMuldoSelected = i;
+		
+		if(isMale){
 			males.get(i).getStyleClass().clear();
 			males.get(i).getStyleClass().add("selected");
-			idMuldoSelected = i;
-			modifieMuldo(males.get(i));
+			sexeMuldoSelected = 0;
 		}else{
-			//la box n'est pas une box Male
-			i = 0;
-			l = femelles.size();
-			while(i<l && !hbox.equals(femelles.get(i))){
-				i++;
-			}
-			if(i<l){
-				if(idMuldoSelected<0){
-					int idFemelle = -idMuldoSelected - 1;
-					if(idFemelle%2==0){
-						femelles.get(idFemelle).getStyleClass().clear();
-						femelles.get(idFemelle).getStyleClass().add("pair");
-					}else{
-						femelles.get(idFemelle).getStyleClass().clear();
-						femelles.get(idFemelle).getStyleClass().add("impair");
-					}
-				}else{
-					if(idMuldoSelected%2==0){
-						males.get(idMuldoSelected).getStyleClass().clear();
-						males.get(idMuldoSelected).getStyleClass().add("pair");
-					}else{
-						males.get(idMuldoSelected).getStyleClass().clear();
-						males.get(idMuldoSelected).getStyleClass().add("impair");
-					}
-				}
-				femelles.get(i).getStyleClass().clear();
-				femelles.get(i).getStyleClass().add("selected");
-				idMuldoSelected = -i-1;
-				modifieMuldo(femelles.get(i));
-			}
+			femelles.get(i).getStyleClass().clear();
+			femelles.get(i).getStyleClass().add("selected");
+			sexeMuldoSelected = 1;
 		}
 	}
 	
-	private void modifieMuldo(HBox hBox) {
-		Label l = ((Label)hBox.getChildren().get(1));
-		Muldo m = Main.repMuldo.getByName(l.getText()).get(0);
+	private void modifieMuldo(Muldo m) {
 		muldoSelected = m;
 		String im = m.getCouleur().getUrl();
 		imMuldo.setImage(new Image(im));
@@ -188,9 +176,9 @@ public class SuppMuldoViewController extends AbstractController  implements Init
 		lbNbSaille.setText("/"+m.getNbsaillies());
 		String s = m.getProprietaire();
 		if(s.equals("?")){
-			txtProp.setText(Main.repProp.getAll().get(0).getNom());
+			txtProp.setText(Main.service.getRepProp().getAll().get(0).getNom());
 		}else{
-			txtProp.setText(Main.repProp.getByName(m.getProprietaire()).get(0).getNom());
+			txtProp.setText(Main.service.getRepProp().getByName(m.getProprietaire()).get(0).getNom());
 		}
 		//Clean vbGroupe qui contient toutes les HBox de groupes
 		vbGroupe.getChildren().clear();

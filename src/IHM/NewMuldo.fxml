@@ -70,7 +70,7 @@
                         <children>
                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="27.0" prefWidth="180.0" spacing="5.0">
                               <children>
-                                    <ComboBox fx:id="cboGroupeMale" minWidth="130.0" prefHeight="27.0" prefWidth="130.0" styleClass="combobox">
+                                    <ComboBox fx:id="cboGroupeMale" onAction="#actionCombobox" minWidth="130.0" prefHeight="27.0" prefWidth="130.0" styleClass="combobox">
                  					</ComboBox>
                                     <Button maxHeight="21.0" maxWidth="21.0" minHeight="21.0" minWidth="21.0" mnemonicParsing="false" onAction="#addGroupeMale" prefHeight="21.0" prefWidth="21.0" text="+">
             	                        <font>
@@ -136,7 +136,7 @@
                         <children>
                            <HBox alignment="CENTER_LEFT" minWidth="180.0" prefHeight="27.0" prefWidth="180.0" spacing="5.0">
                               <children>
-                                    <ComboBox fx:id="cboGroupeFemelle" minWidth="150.0" prefHeight="27.0" prefWidth="150.0" styleClass="combobox">
+                                    <ComboBox fx:id="cboGroupeFemelle" onAction="#actionCombobox" minWidth="150.0" prefHeight="27.0" prefWidth="150.0" styleClass="combobox">
                  					</ComboBox>
                                     <Button maxHeight="21.0" maxWidth="21.0" minHeight="21.0" minWidth="21.0" mnemonicParsing="false" onAction="#addGroupeFemelle" prefHeight="21.0" prefWidth="21.0" text="+">
             	                        <font>
@@ -178,7 +178,7 @@
                <children>
             	<Label styleClass="labelFenetreTitre" text="Nouveau Muldo">
                		<VBox.margin>
-                  		<Insets bottom="10.0" top="10.0" />
+                  		<Insets bottom="5.0" top="10.0" />
                		</VBox.margin>
             	</Label>
                   <ImageView fx:id="imNewMuldo" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
@@ -253,7 +253,12 @@
             			</VBox>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="68.0" prefWidth="450.0" spacing="20.0">
+            <HBox alignment="CENTER" prefHeight="20.0" prefWidth="350.0">
+               <children>
+                  <Label fx:id="message" />
+               </children>
+            </HBox>
+                  <HBox alignment="CENTER" prefHeight="31.0" prefWidth="350.0" spacing="20.0">
                      <children>
                         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#validateNewMuldo" prefWidth="58.0" text="Valider" />
                         <Button mnemonicParsing="false" onAction="#cancelNewMuldo" text="Annuler" />

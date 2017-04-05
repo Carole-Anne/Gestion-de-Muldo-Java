@@ -166,15 +166,15 @@
          <children>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                <children>
-                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefWidth="101.0" text="Trouver Mâle">
+                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#trouverMale" prefWidth="101.0" text="Trouver Mâle">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#arbreMale" prefWidth="101.0" text="Arbre" />
+                  <Button fx:id="btArbreMale" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#arbreMale" prefWidth="101.0" text="Arbre" />
                   <ImageView fx:id="imMuldoMale" fitHeight="81.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../image/dore.png" />
+                        <Image url="@../image/anonyme.png" />
                      </image>
                      <VBox.margin>
                         <Insets bottom="5.0" />
@@ -186,15 +186,15 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="2">
                <children>
-                  <Button mnemonicParsing="false" text="Trouver Femelle">
+                  <Button disable="true" mnemonicParsing="false" onAction="#trouverFemelle" text="Trouver Femelle">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#arbreFemelle" prefWidth="101.0" text="Arbre" />
+                  <Button fx:id="btArbreFemelle" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#arbreFemelle" prefWidth="101.0" text="Arbre" />
                   <ImageView fx:id="imMuldoFemelle" fitHeight="81.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../image/dore.png" />
+                        <Image url="@../image/anonyme.png" />
                      </image>
                      <VBox.margin>
                         <Insets bottom="5.0" />
@@ -214,13 +214,18 @@
                         <Image url="@../image/anonyme.png" />
                      </image>
                   </ImageView>
-                  <Label text="Nb de saillies max : x" textFill="WHITE" />
-                  <Button mnemonicParsing="false" text="Feconder" />
+                  <HBox alignment="CENTER" prefHeight="18.0" prefWidth="117.0">
+                     <children>
+                        <Label styleClass="labelFenetre" text="Nb de saillies max : " textFill="WHITE" />
+                        <Label fx:id="nbSaillieHypo" styleClass="labelFenetre" text="?" />
+                     </children>
+                  </HBox>
+                  <Button mnemonicParsing="false" onAction="#feconder" text="Feconder" />
                </children>
             </VBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
-                  <Button alignment="CENTER" mnemonicParsing="false" text="Calculer" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#calculSaillie" text="Calculer" />
                </children>
             </HBox>
          </children>

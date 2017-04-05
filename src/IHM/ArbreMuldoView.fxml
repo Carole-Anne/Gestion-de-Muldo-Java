@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="rootPane" minHeight="500.0" minWidth="850.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IHM.ArbreMuldoController">
+<BorderPane fx:id="rootPane" minHeight="500.0" minWidth="950.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IHM.ArbreMuldoController">
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" styleClass="center" BorderPane.alignment="CENTER">
          <children>
@@ -95,7 +95,7 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox fx:id="grandParents" alignment="CENTER" prefHeight="125.0" prefWidth="200.0" spacing="120.0">
+            <HBox fx:id="grandParents" alignment="CENTER" prefHeight="125.0" prefWidth="200.0" spacing="140.0">
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
@@ -139,7 +139,7 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox fx:id="parents" alignment="CENTER" prefHeight="125.0" prefWidth="200.0" spacing="310.0">
+            <HBox fx:id="parents" alignment="CENTER" prefHeight="125.0" prefWidth="200.0" spacing="380.0">
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>

@@ -87,21 +87,18 @@ public class GroupeController extends AbstractController  implements Initializab
 			}else if(name.length() > 20){
 				lbMessage.setText("Le nom est trop grand (20 caractères maximum)");	
 			}else{
-				if(Main.repGroupe.getNameFind(name)){
+				if(Main.service.getRepGroupe().getNameFind(name)){
 					lbMessage.setText("Le nom du groupe hésiste déjà (dans groupe ou propriétaire)");
 				}else{
 					lbMessage.setText("Le nom contient au moins un caractère non valable");
 				}
 			}
 		}else{
-			System.out.println("nom valide");
-			if(Main.repGroupe.getNameFind(name)){
-				System.out.println("Déjà dans la base");
+			if(Main.service.getRepGroupe().getNameFind(name)){
 				txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: red; -fx-text-fill: white ;");
 				lbMessage.setStyle("-fx-text-fill: #e81010;");
 				lbMessage.setText("Le nom du groupe hésiste déjà (dans groupe ou propriétaire)");
 			}else{
-				System.out.println("Ajout dans la base");
 				txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: black; -fx-text-fill: white ;");
 				lbMessage.setStyle("-fx-text-fill: Green;");
 				lbMessage.setText("Ajout du groupe");
@@ -110,7 +107,7 @@ public class GroupeController extends AbstractController  implements Initializab
 				Troupeau newTroupeau = new Troupeau();
 				newTroupeau.setNom(name);
 				
-				Main.repTroupeau.add(newTroupeau);
+				Main.service.getRepTroupeau().add(newTroupeau);
 			}
 		}
 	}
@@ -159,7 +156,7 @@ public class GroupeController extends AbstractController  implements Initializab
 				lbMessage.setStyle("-fx-text-fill: #e81010;");
 				lbMessage.setText("Veuillez choisir un groupe");
 			}else{
-				if(Main.repGroupe.getNameFind(name)){
+				if(Main.service.getRepGroupe().getNameFind(name)){
 					txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: red; -fx-text-fill: white ;");
 					lbMessage.setStyle("-fx-text-fill: #e81010;");
 					lbMessage.setText("Le nom du groupe hésiste déjà (dans groupe ou propriétaire)");
@@ -170,8 +167,8 @@ public class GroupeController extends AbstractController  implements Initializab
 					txtName.setText("");
 	
 					groupe.setNom(name);
-					Main.repTroupeau.update(groupe);
-					Main.repTroupeau.commit();
+					Main.service.getRepTroupeau().update(groupe);
+					Main.service.getRepTroupeau().commit();
 					//TODO mettre à jours la cbo
 				}
 			}
@@ -208,8 +205,8 @@ public class GroupeController extends AbstractController  implements Initializab
 			lbMessage.setStyle("-fx-text-fill: Green;");
 			lbMessage.setText("Suppression du groupe");	
 			suppInMuldo(groupe);
-			Main.repTroupeau.remove(groupe);
-			Main.repTroupeau.commit();
+			Main.service.getRepTroupeau().remove(groupe);
+			Main.service.getRepTroupeau().commit();
 			//TODO Mettre à jour la combobox
 		}
 	}
@@ -242,7 +239,7 @@ public class GroupeController extends AbstractController  implements Initializab
 				lbMessage.setText("Le nom contient au moins un caractère non valable");
 			}
 		}else{
-			if(Main.repGroupe.getNameFind(name)){
+			if(Main.service.getRepGroupe().getNameFind(name)){
 				txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: red; -fx-text-fill: white ;");
 				lbMessage.setStyle("-fx-text-fill: #e81010;");
 				lbMessage.setText("Le nom du groupe hésiste déjà (dans groupe ou propriétaire)");
@@ -255,7 +252,7 @@ public class GroupeController extends AbstractController  implements Initializab
 				Proprietaire newProp = new Proprietaire();
 				newProp.setNom(name);
 				
-				Main.repProp.add(newProp);
+				Main.service.getRepProp().add(newProp);
 			}
 		}
 	}
@@ -302,7 +299,7 @@ public class GroupeController extends AbstractController  implements Initializab
 				lbMessage.setStyle("-fx-text-fill: #e81010;");
 				lbMessage.setText("Veuillez choisir un propriétaire");
 			}else{
-				if(Main.repGroupe.getNameFind(name)){
+				if(Main.service.getRepGroupe().getNameFind(name)){
 					txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: red; -fx-text-fill: white ;");
 					lbMessage.setStyle("-fx-text-fill: #e81010;");
 					lbMessage.setText("Le nom du groupe hésiste déjà (dans groupe ou propriétaire)");
@@ -312,8 +309,8 @@ public class GroupeController extends AbstractController  implements Initializab
 					txtName.setText("");
 	
 					prop.setNom(name);
-					Main.repProp.update(prop);
-					Main.repProp.commit();
+					Main.service.getRepProp().update(prop);
+					Main.service.getRepProp().commit();
 				}
 			}
 		}
@@ -348,8 +345,8 @@ public class GroupeController extends AbstractController  implements Initializab
 			lbMessage.setText("Veuillez choisir un propriétaire");
 		}else{
 			suppInMuldo(prop);
-			Main.repProp.remove(prop);
-			Main.repProp.commit();
+			Main.service.getRepProp().remove(prop);
+			Main.service.getRepProp().commit();
 		
 			cboProp.setStyle("-fx-background-color: #574F4D; -fx-border-color: black; -fx-text-fill: white ;");
 			lbMessage.setStyle("-fx-text-fill: Green;");
@@ -374,7 +371,7 @@ public class GroupeController extends AbstractController  implements Initializab
 	
 	private ComboBox<Troupeau> createCombobox(){
 		ComboBox<Troupeau> newCombo = new ComboBox<Troupeau>();
-		newCombo.getItems().addAll(Main.repTroupeau.getAll());
+		newCombo.getItems().addAll(Main.service.getRepTroupeau().getAll());
 		newCombo.setPrefWidth(130);
 		newCombo.setMinWidth(130);
 		newCombo.setMaxWidth(130);
@@ -384,7 +381,7 @@ public class GroupeController extends AbstractController  implements Initializab
 	
 	private ComboBox<Proprietaire> createComboboxProp(){
 		ComboBox<Proprietaire> newCombo = new ComboBox<Proprietaire>();
-		newCombo.getItems().addAll(Main.repProp.getAll());
+		newCombo.getItems().addAll(Main.service.getRepProp().getAll());
 		newCombo.setPrefWidth(130);
 		newCombo.setMinWidth(130);
 		newCombo.setMaxWidth(130);
