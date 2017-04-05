@@ -16,7 +16,13 @@ public class CreateEntityManagerFactory{
 			new CreateEntityManagerFactory("Muldo");
 		}
 		return emf;
-		
+	}
+	
+	public static synchronized EntityManagerFactory getInstanceTest(){
+		if (emf == null){
+			new CreateEntityManagerFactory("MuldoTest");
+		}
+		return emf;
 	}
 	
 }
