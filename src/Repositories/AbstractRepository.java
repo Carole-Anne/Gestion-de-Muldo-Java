@@ -14,17 +14,14 @@ public abstract class AbstractRepository<T extends IEntities> implements IReposi
 	
 	private Class<T> entityClass;
 	
-	@Override
 	public EntityManager getEntityManager(){
 		return em;
 	}
 	
-	@Override
 	public void setEntityManager(EntityManager em){
 		this.em = em;
 	}
 	
-	@Override
 	public EntityTransaction getTransaction(){
 		if(transaction == null){
 			transaction = em.getTransaction();
@@ -49,7 +46,8 @@ public abstract class AbstractRepository<T extends IEntities> implements IReposi
 	
 	@Override
 	public T update(T entity){
-		return em.merge(entity);
+		T enty = em.merge(entity);
+		return enty;
 	}
 
 	@Override
