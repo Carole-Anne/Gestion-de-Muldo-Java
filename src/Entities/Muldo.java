@@ -221,12 +221,18 @@ public class Muldo implements Serializable, IEntities {
 	}
 
 	public void setProp(Proprietaire value) {
+		boolean propChanged = false;
 		for(int i = 0; i<groupes.size(); i++){
 			if(groupes.get(i).getClass() == Entities.Proprietaire.class){
 				groupes.set(i, value);		
+				propChanged = true;
 			}
 		}
 		if(groupes.size() == 0){
+			groupes.add(value);
+			propChanged = true;
+		}
+		if(!propChanged){
 			groupes.add(value);
 		}
 		
@@ -259,6 +265,10 @@ public class Muldo implements Serializable, IEntities {
 
 	public void suppNbEnfants() {
 		nbenfant--;
+	}
+	
+	public boolean haveSaillie(){
+		return nbsaillies > nbsailliesused;
 	}
 
 }
