@@ -10,7 +10,7 @@ public class RepositoryCouleur extends AbstractRepository<Couleur>{
 	@Override 
 	public List<Couleur> getAll(){
 		List<Couleur> list = super.getAll();
-		list.remove(0);
+		list.removeIf(c -> c.getNom() == "Anonyme");
 		return list;
 	}
 

@@ -50,4 +50,20 @@ public class RepositoryMuldo extends AbstractRepository<Muldo>{
 		}
 		return getEntityManager().createQuery(sql).getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Muldo> getByFather(Integer id){
+		List<Muldo> muldos;
+		String sql = "SELECT m FROM Muldo m WHERE m.muldoPere.id = :id";
+		muldos = getEntityManager().createQuery(sql).setParameter("id", id).getResultList();
+		return muldos;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Muldo> getByMother(Integer id){
+		List<Muldo> muldos;
+		String sql = "SELECT m FROM Muldo m WHERE m.muldoMere.id = :id";
+		muldos = getEntityManager().createQuery(sql).setParameter("id", id).getResultList();
+		return muldos;
+	}
 }
