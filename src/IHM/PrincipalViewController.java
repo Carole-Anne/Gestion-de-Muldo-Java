@@ -7,6 +7,7 @@ import Entities.IEntities;
 import Entities.Muldo;
 import Services.Main;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class PrincipalViewController extends AbstractController implements Initializable{
 	
@@ -87,7 +89,8 @@ public class PrincipalViewController extends AbstractController implements Initi
 		vbs.add(vbFemelleGroupe);
 		
 		//Initialisation des listes de muldo
-		List<Muldo> muldosM = Main.service.getRepMuldo().getAllFecond(0);
+		//List<Muldo> muldosM = Main.service.getRepMuldo().getAllFecond(0);
+		List<Muldo> muldosM = Main.service.getRepMuldo().getAll(0);
 		males = createList(muldosM); 
 		if(muldosM.size() != 0){
 			isSelected(males.get(0));
@@ -95,7 +98,8 @@ public class PrincipalViewController extends AbstractController implements Initi
 			btArbreMale.setDisable(true);
 		}
 		listMale.getChildren().addAll(males);
-		List<Muldo> muldosF = Main.service.getRepMuldo().getAllFecond(1);
+		//List<Muldo> muldosF = Main.service.getRepMuldo().getAllFecond(1);
+		List<Muldo> muldosF = Main.service.getRepMuldo().getAll(1);
 		femelles = createList(muldosF);
 		if(muldosF.size() != 0){
 			isSelected(femelles.get(0));
@@ -118,23 +122,24 @@ public class PrincipalViewController extends AbstractController implements Initi
 	}
 	
 	@FXML
-	private void trouverMale() throws IOException{
+	private void trouverMale() throws IOException, InterruptedException{
 		Main.service.selectMuldoMale(mFemelle);
 		afficherList();
+		mMale = Main.service.getmMale();
 	}
 	
 	@FXML
-	private void trouverFemelle() throws IOException{
+	private void trouverFemelle() throws IOException, InterruptedException{
 		Main.service.selectMuldoFemelle(mMale);
 		afficherList();
-		modifieMuldoFemelle(Main.service.getmFemelle()); //TODO
+		mFemelle = Main.service.getmFemelle();
 	}
 	
-	public void findMale(Muldo m){
+	public synchronized void findMale(Muldo m){
 		modifieMuldoMale(Main.service.getmMale());
 	}
 	
-	private void afficherList() throws IOException{
+	private void afficherList() throws IOException, InterruptedException{
 		Stage s = new Stage();
 		double height = 350;
 		double width = 600;
@@ -145,6 +150,13 @@ public class PrincipalViewController extends AbstractController implements Initi
 			 
 		s.setScene(scene);
 		s.show();
+		s.setOnCloseRequest(new EventHandler<WindowEvent>(){
+			@Override
+			public void handle(WindowEvent we) {
+				notifyAll();
+			}
+		});
+		wait();
 	 }
 
 	@FXML

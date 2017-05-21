@@ -114,12 +114,13 @@ public class SelectionViewController extends AbstractController implements Initi
 	}
 	
 	@FXML
-	private void choiceMuldo(){
+	private  synchronized void choiceMuldo(){
 		if(Main.service.getFindMuldo() == 0){
 			Main.service.setmMale(muldoSelected);
 		}else{
 			Main.service.setmFemelle(muldoSelected);
 		}
+		notifyAll();
 		//Fermer la fenetre
 		Stage stage = (Stage) btChoisir.getScene().getWindow();
 		stage.close();

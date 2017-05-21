@@ -116,7 +116,7 @@ public class NewMuldoController extends AbstractController implements Initializa
 		sexeF.setUserData(1);
 		
 		//Initialisation des listes de muldo
-		List<Muldo> muldosM = Main.service.getRepMuldo().getAll(0); //TODO manque anonyme
+		List<Muldo> muldosM = Main.service.getRepMuldo().getAll(0); 
 		males = createList(muldosM);
 		if(muldosM.size() != 0){
 			isSelected(males.get(0));
@@ -167,7 +167,7 @@ public class NewMuldoController extends AbstractController implements Initializa
 		String nbSaillie = txtNbSaillies.getText();
 		Muldo mere = Main.service.getRepMuldo().getById(Integer.parseInt(femelles.get(idFemellesSelected).getId()));
 		Muldo pere = Main.service.getRepMuldo().getById(Integer.parseInt(males.get(idMalesSelected).getId()));
-		if(!name.matches("[a-zA-Z]{1,16}")){
+		if(!name.matches("[a-zA-Z0-9]{1,16}")){
 			goodFormul = false;
 			txtName.setStyle("-fx-background-color: #574F4D; -fx-border-color: red; -fx-text-fill: white ;");
 			message.setStyle("-fx-text-fill: #e81010;");
@@ -200,30 +200,12 @@ public class NewMuldoController extends AbstractController implements Initializa
 		}*/
 		if(goodFormul){	
 			message.setText("");
-			Muldo m = new Muldo();
-			m.setSexe(Integer.parseInt(tgSexe.getSelectedToggle().getUserData().toString()));
-			m.setCouleur(cboChoiceColor.getValue());
-			m.setNom(name);
-			m.setNbenfant(0);
-			m.setNbsaillies(Integer.parseInt(nbSaillie));
-			m.setFecond(false);
-			m.setMuldoMere(mere);
-			if(mere.getId() != 2){
-				mere.addNbenfant();
-			}
-			m.setMuldoPere(pere);
-			if(pere.getId() != 1){
-				pere.addNbenfant();
-			}
-			m.setProp(cboProp.getValue());
-			ObservableList<Node> listGroupes = vbGroupe.getChildren();
-			for(int i = 0; i<listGroupes.size(); i++){
-				Node cbo = ( (HBox)listGroupes.get(i)).getChildren().get(0);
-				m.setTroupeau(((ComboBox<Groupe>)cbo).getValue());
-			}
-			m.setVisible(true);
+			Main.service.addMuldo(name, nbSaillie, 
+					Integer.parseInt(tgSexe.getSelectedToggle().getUserData().toString()), 
+					Integer.parseInt(femelles.get(idFemellesSelected).getId()), 
+					Integer.parseInt(males.get(idMalesSelected).getId()), 
+					cboChoiceColor.getValue(), cboProp.getValue(), vbGroupe.getChildren());
 			
-			Main.service.getRepMuldo().add(m);
 			goPrincipalView();
 		}
 		Main.primaryStage.getScene().setCursor(Cursor.DEFAULT); 
