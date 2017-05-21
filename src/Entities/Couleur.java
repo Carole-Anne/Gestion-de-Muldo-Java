@@ -10,7 +10,7 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Couleur.findAll", query="SELECT c FROM Couleur c")
+@NamedQuery(name="Couleur.findAll", query="SELECT c FROM Couleur c Order By c.nom")
 public class Couleur implements Serializable, IEntities{
 	private static final long serialVersionUID = 1L;
 
@@ -23,6 +23,10 @@ public class Couleur implements Serializable, IEntities{
 	private String url;
 	
 	private String urlicon;
+	
+	private int nbfemelle;
+	
+	private int nbmale;
 
 	//bi-directional many-to-one association to Muldo
 	@OneToMany(mappedBy="couleur")
@@ -88,6 +92,22 @@ public class Couleur implements Serializable, IEntities{
 	public String toString(){
 		return nom;
 		
+	}
+
+	public int getNbFemelle() {
+		return nbfemelle;
+	}
+
+	public void setNbFemelle(int nbfemelle) {
+		this.nbfemelle = nbfemelle;
+	}
+
+	public int getNbMale() {
+		return nbmale;
+	}
+
+	public void setNbMale(int nbmale) {
+		this.nbmale = nbmale;
 	}
 
 }
