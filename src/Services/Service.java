@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 
 import Entities.Arbre;
 import Entities.Couleur;
+import Entities.Groupe;
 import Entities.Muldo;
 import Entities.Proprietaire;
 import Repositories.RepositoryCouleur;
@@ -15,8 +16,14 @@ import Repositories.RepositoryGroupe;
 import Repositories.RepositoryMuldo;
 import Repositories.RepositoryProprietaire;
 import Repositories.RepositoryTroupeau;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.layout.HBox;
 
 public class Service {
+	
+	EntityManager em;
 	
 	private Muldo[] arbreMuldo;
 	private Muldo mFemelle;
@@ -33,6 +40,7 @@ public class Service {
 	private RepositoryProprietaire repProp;
 	
 	public Service(EntityManager em){
+		this.em = em;
 		repMuldo = new RepositoryMuldo(em);
 		repColor = new RepositoryCouleur(em);
 		repGroupe = new RepositoryGroupe(em);
@@ -80,6 +88,50 @@ public class Service {
 	public RepositoryProprietaire getRepProp() {
 		return repProp;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void addMuldo(String name, String nbSaillie, int sexe, int idMere, int idPere, Couleur color, Proprietaire prop, List<Node> listGroupes){
+		Muldo m = new Muldo();
+		m.setSexe(sexe);
+		m.setCouleur(color);
+		m.setNom(name);
+		m.setNbenfant(0);
+		m.setNbsaillies(Integer.parseInt(nbSaillie));
+		m.setFecond(false);
+		Muldo mere = repMuldo.getById(idMere);
+		m.setMuldoMere(mere);
+		Muldo pere = repMuldo.getById(idPere);
+		m.setMuldoPere(pere);
+		m.setProp(prop);
+		for(int i = 0; i<listGroupes.size(); i++){
+			Node cbo = ( (HBox)listGroupes.get(i)).getChildren().get(0);
+			m.setTroupeau(((ComboBox<Groupe>)cbo).getValue());
+		}
+		m.setVisible(true);
+		
+		repMuldo.add(m);
+		updateNbEnfant(m, 0);
+		updateColor(m.getSexe(), m.getCouleur());
+		repMuldo.commit();
+	}
+	
+	private void updateNbEnfant(Muldo m, int i){
+		Muldo mere = m.getMuldoMere();
+		Muldo pere = m.getMuldoPere();
+		if(mere.getId() != muldoAnonymeFemelle){
+			mere.addNbenfant();
+			if(i<3){
+				updateNbEnfant(mere, i+1);
+			}
+		}
+		if(pere.getId() != muldoAnonymeMale){
+			pere.addNbenfant();
+			if(i<3){
+				updateNbEnfant(pere, i+1);
+			}
+		}
+		repMuldo.commit();
+	}
 
 	/**
 	 * Supprime le muldo pour l'éleveur mais pas dans la base
@@ -88,50 +140,77 @@ public class Service {
 	public void delete(Muldo m){
 		m.setVisible(false);
 		repMuldo.update(m);
+		
+		Muldo pere = m.getMuldoPere();
+		Muldo mere = m.getMuldoMere();
+		
+		if(pere.getId() != muldoAnonymeMale){
+			pere.setNbenfant(pere.getNbenfant()-1);
+			if(supp(pere,0)){
+				removeBD(pere);
+			}
+		}
+		if(mere.getId() != muldoAnonymeFemelle){
+			mere.setNbenfant(mere.getNbenfant()-1);
+			if(supp(mere,0)){
+				removeBD(mere);
+			}
+		}
+		if(m.getNbenfant() == 0){
+			repMuldo.remove(m);
+		}
+
 		repMuldo.commit();
-		deleteMuldoOfBD(m);
+	}
+	
+	private boolean supp(Muldo m, int i){
+		int j = i+1;
+		Muldo pere = m.getMuldoPere();
+		Muldo mere = m.getMuldoMere();
+		if(pere.getId() != muldoAnonymeMale){
+			if(j<4){
+				pere.setNbenfant(pere.getNbenfant()-1);
+			}
+			if(supp(pere,j)){
+				removeBD(pere);
+				pere = repMuldo.getById(muldoAnonymeMale);
+				m.setMuldoPere(pere);
+			}
+		}
+		if(mere.getId() != muldoAnonymeFemelle){
+			if(j<4){
+				mere.setNbenfant(mere.getNbenfant()-1);
+			}
+			if(supp(mere,j)){
+				removeBD(mere);
+				mere = repMuldo.getById(muldoAnonymeFemelle);
+				m.setMuldoMere(mere);
+			}
+		}
+		if(mere.getId() == muldoAnonymeFemelle && pere.getId() == muldoAnonymeMale && m.getNbenfant() == 0 && !m.getVisible()){
+			return true;
+		}
+		return false;
+	}
+	
+	private void removeBD(Muldo m){
+		List<Muldo> muldos;
+		Muldo anonyme;
+		if(m.getSexe()==0){
+			anonyme = repMuldo.getById(muldoAnonymeMale);
+			muldos = repMuldo.getByFather(m.getId());
+			muldos.forEach(muldo -> muldo.setMuldoPere(anonyme));
+		}else{
+			anonyme = repMuldo.getById(muldoAnonymeFemelle);
+			muldos = repMuldo.getByMother(m.getId());
+			muldos.forEach(muldo -> muldo.setMuldoMere(anonyme));
+		}
+		repMuldo.remove(m);
+		repMuldo.commit();
 	}
 	
 	public Muldo[] getArbre(){
 		return arbreMuldo;
-	}
-
-	/**
-	 * Suppression de muldo dans la base
-	 * @param m
-	 */
-	private void deleteMuldoOfBD(Muldo m) {
-		List<Muldo> muldos = new ArrayList<Muldo>();
-		muldos.add(m.getMuldoMere());
-		muldos.add(m.getMuldoPere());
-		supp(muldos);
-		if(m.getNbenfant()<1){
-			repMuldo.remove(m);
-			repMuldo.commit();
-		}
-		
-	}
-	
-	private void supp(List<Muldo> muldos){
-		Muldo m;
-		while(!muldos.isEmpty()){
-			m = muldos.remove(0);
-			if(m.getId() != muldoAnonymeMale && m.getId() != muldoAnonymeFemelle){
-				m.suppNbEnfants();
-				repMuldo.update(m);
-				if(!m.getVisible()){
-					if(m.getNbenfant() < 1){
-						//TODO Violation contrainte : remove le parent qui est toujours relié à l'enfant
-						//repMuldo.remove(m);
-					}else{
-						repMuldo.update(m);
-						muldos.add(m.getMuldoPere());
-						muldos.add(m.getMuldoMere());
-					}
-				}
-				repMuldo.commit();
-			}
-		}
 	}
 	
 	public int nbSailliesHypothetique(Muldo mere, Muldo pere){		
@@ -593,6 +672,12 @@ public class Service {
 		c40.setUrl("./image/pruneIndigo.png");
 		c40.setUrlIcon("./image/icon/pruneIndigo.png");
 		repColor.save(c40);
+		
+		Couleur c63 = new Couleur();
+		c63.setNom("Prune Ivoire");
+		c63.setUrl("./image/pruneIvoire.png");
+		c63.setUrlIcon("./image/icon/pruneIvoire.png");
+		repColor.save(c63);
 
 		Couleur c41 = new Couleur();
 		c41.setNom("Prune Orchidé");
@@ -605,6 +690,12 @@ public class Service {
 		c42.setUrl("./image/prunePourpre.png");
 		c42.setUrlIcon("./image/icon/prunePourpre.png");
 		repColor.save(c42);
+		
+		Couleur c61 = new Couleur();
+		c61.setNom("Prune Pourpre");
+		c61.setUrl("./image/pruneTurquoise.png");
+		c61.setUrlIcon("./image/icon/pruneTurquoise.png");
+		repColor.save(c61);
 
 		Couleur c43 = new Couleur();
 		c43.setNom("Roux");
@@ -642,11 +733,11 @@ public class Service {
 		c48.setUrlIcon("./image/icon/rouxIndigo.png");
 		repColor.save(c48);
 
-		Couleur c61 = new Couleur();
-		c61.setNom("Roux Ivoire");
-		c61.setUrl("./image/rouxIvoire.png");
-		c61.setUrlIcon("./image/icon/rouxIvoire.png");
-		repColor.save(c61);
+		Couleur c62 = new Couleur();
+		c62.setNom("Roux Ivoire");
+		c62.setUrl("./image/rouxIvoire.png");
+		c62.setUrlIcon("./image/icon/rouxIvoire.png");
+		repColor.save(c62);
 		
 		Couleur c49 = new Couleur();
 		c49.setNom("Roux Orchidé");
@@ -720,6 +811,15 @@ public class Service {
 		c60.setUrlIcon("./image/icon/turquoiseRoux.png");
 		repColor.save(c60);
 		
+		repColor.commit();
+	}
+
+	private void updateColor(Integer sexe, Couleur couleur) {
+		if(sexe == 0){
+			couleur.setNbMale(couleur.getNbMale()+1);
+		}else{
+			couleur.setNbFemelle(couleur.getNbFemelle()+1);
+		}
 		repColor.commit();
 	}
 

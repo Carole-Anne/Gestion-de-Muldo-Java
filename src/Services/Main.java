@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
+import Entities.Muldo;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -37,6 +41,7 @@ public class Main extends Application {
 			emf = CreateEntityManagerFactory.getInstance();
 			em = emf.createEntityManager();
 			service = new Service(em);
+			
 		}catch(Exception e){
 			em = createBD();
 			service = new Service(em);
@@ -60,6 +65,8 @@ public class Main extends Application {
 				+"nom character varying NOT NULL,"
 				+"url character varying(80) NOT NULL,"
 				+"urlicon character varying(80) NOT NULL,"
+				+"nbfemelle integer NOT NULL DEFAULT 0,"
+				+"nbmale integer NOT NULL DEFAULT 0,"
 				+"CONSTRAINT couleur_pkey PRIMARY KEY (id)"
 				+") WITH (OIDS = FALSE)"
 				+"TABLESPACE pg_default");
